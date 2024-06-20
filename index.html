@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Food Truck Order Calculator</title>
+    <title>Tsering MOMO</title>
     <!-- Bootstrap CSS -->
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome CSS -->
@@ -168,70 +168,86 @@
 
     <script>
         let totalPrice = 0;
-        let orderList = [];
+let orderList = [];
 
-        function addItem(name, price) {
-            totalPrice += price;
-            const existingItem = orderList.find(item => item.name === name);
-            if (existingItem) {
-                existingItem.quantity += 1;
-            } else {
-                orderList.push({ name, price, quantity: 1 });
-            }
-            updateTotal();
-            updateOrderList();
-        }
+function addItem(name, price) {
+    totalPrice += price;
+    const existingItem = orderList.find(item => item.name === name);
+    if (existingItem) {
+        existingItem.quantity += 1;
+    } else {
+        orderList.push({ name, price, quantity: 1 });
+    }
+    updateTotal();
+    updateOrderList();
+    togglePaymentSection();
+}
 
-        function removeItem(name, price) {
-            totalPrice -= price;
-            if (totalPrice < 0) totalPrice = 0;  // Ensure total price doesn't go negative
-            const index = orderList.findIndex(item => item.name === name);
-            if (index !== -1) {
-                const item = orderList[index];
-                if (item.quantity > 1) {
-                    item.quantity -= 1;
-                } else {
-                    orderList.splice(index, 1);
-                }
-            }
-            updateTotal();
-            updateOrderList();
+function removeItem(name, price) {
+    totalPrice -= price;
+    if (totalPrice < 0) totalPrice = 0;  // Ensure total price doesn't go negative
+    const index = orderList.findIndex(item => item.name === name);
+    if (index !== -1) {
+        const item = orderList[index];
+        if (item.quantity > 1) {
+            item.quantity -= 1;
+        } else {
+            orderList.splice(index, 1);
         }
+    }
+    updateTotal();
+    updateOrderList();
+    togglePaymentSection();
+}
 
-        function updateTotal() {
-            document.getElementById('totalPrice').textContent = totalPrice.toFixed(2);
-        }
+function updateTotal() {
+    document.getElementById('totalPrice').textContent = totalPrice.toFixed(2);
+}
 
-        function calculateChange() {
-            const moneyGiven = parseFloat(document.getElementById('moneyGiven').value);
-            if (!isNaN(moneyGiven)) {
-                const change = moneyGiven - totalPrice;
-                document.getElementById('changeAmount').textContent = change.toFixed(2);
-            } else {
-                document.getElementById('changeAmount').textContent = "0.00";
-            }
-        }
+function calculateChange() {
+    const moneyGiven = parseFloat(document.getElementById('moneyGiven').value);
+    if (!isNaN(moneyGiven)) {
+        const change = moneyGiven - totalPrice;
+        document.getElementById('changeAmount').textContent = change.toFixed(2);
+    } else {
+        document.getElementById('changeAmount').textContent = "0.00";
+    }
+}
 
-        function updateOrderList() {
-            const ordersElement = document.getElementById('orders');
-            ordersElement.innerHTML = '';
-            orderList.forEach(item => {
-                const li = document.createElement('li');
-                li.className = 'list-group-item order-item';
-                li.innerHTML = `<span class="item-details">${item.name} - $${item.price.toFixed(2)} <span class="badge badge-success">${item.quantity}</span></span>
-                                <button class="btn btn-sm btn-danger" onclick="removeItem('${item.name}', ${item.price})"><i class="fas fa-times"></i></button>`;
-                ordersElement.appendChild(li);
-            });
-        }
+function updateOrderList() {
+    const ordersElement = document.getElementById('orders');
+    ordersElement.innerHTML = '';
+    orderList.forEach(item => {
+        const li = document.createElement('li');
+        li.className = 'list-group-item order-item';
+        li.innerHTML = `<span class="item-details">${item.name} - $${item.price.toFixed(2)} <span class="badge badge-primary badge-pill">${item.quantity}</span></span>
+                        <button class="btn btn-sm btn-danger" onclick="removeItem('${item.name}', ${item.price})"><i class="fas fa-times"></i></button>`;
+        ordersElement.appendChild(li);
+    });
+}
 
-        function resetOrder() {
-            totalPrice = 0;
-            orderList = [];
-            document.getElementById('totalPrice').textContent = "0.00";
-            document.getElementById('changeAmount').textContent = "0.00";
-            document.getElementById('moneyGiven').value = "";
-            updateOrderList();
-        }
+function resetOrder() {
+    totalPrice = 0;
+    orderList = [];
+    document.getElementById('totalPrice').textContent = "0.00";
+    document.getElementById('changeAmount').textContent = "0.00";
+    document.getElementById('moneyGiven').value = "";
+    updateOrderList();
+    togglePaymentSection();
+}
+
+function togglePaymentSection() {
+    const paymentSection = document.getElementById('payment-section');
+    if (orderList.length > 0) {
+        paymentSection.style.display = 'flex';
+    } else {
+        paymentSection.style.display = 'none';
+    }
+}
+
+// Initial call to hide the payment section on page load
+togglePaymentSection();
+
     </script>
 </body>
 </html>
