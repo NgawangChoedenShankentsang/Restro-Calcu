@@ -142,9 +142,10 @@
 
         <div id="payment-section" class="mb-4">
             <label for="moneyGiven">Money Given: </label>
-            <input type="number" id="moneyGiven" class="form-control d-inline w-auto" step="0.01">
+            <input type="text" id="moneyGiven" class="form-control d-inline w-auto" inputmode="decimal">
             <button class="btn btn-primary" onclick="calculateChange()">Calculate Change</button>
         </div>
+        
         <div id="change" class="alert alert-warning text-center">
             Change: <span id="changeAmount">0.00</span>
         </div>
