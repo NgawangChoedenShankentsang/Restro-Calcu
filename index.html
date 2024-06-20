@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Food Truck Order Calculator</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+        .logo {
+            display: block;
+            margin: 20px auto;
+            max-width: 150px;
+        }
+        h1 {
+            color: #4CAF50;
+            text-align: center;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        .menu-item {
+            position: relative;
+            cursor: pointer;
+        }
+        .menu-item img {
+            width: 100%;
+            height: auto;
+            aspect-ratio: 1 / 1;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+        .menu-item .item-info {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.6);
+            color: #fff;
+            text-align: center;
+            border-radius: 0 0 8px 8px;
+        }
+        #total, #change, #order-summary {
+            margin-top: 20px;
+            font-size: 1.5rem;
+        }
+        #payment-section {
+            margin-top: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        #payment-section label {
+            margin-right: 10px;
+        }
+        #payment-section input {
+            margin-right: 10px;
+        }
+        #order-list {
+            margin-top: 20px;
+        }
+        .order-item {
+            background-color: #fff;
+            margin: 5px 0;
+            padding: 10px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .order-item .item-details {
+            flex-grow: 1;
+        }
+        .order-item .badge {
+            margin-left: 10px;
+        }
+        .order-summary-button {
+            display: flex;
+            justify-content: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <img src="asset/logo.png" alt="Logo" class="logo">
+
+        <div id="menu" class="menu-grid">
+            <div class="menu-item" onclick="addItem('MOMO', 10.00)">
+                <img src="asset/momo.jpg" alt="MOMO">
+                <div class="item-info">
+                    <span>MOMO - 10.00</span>
+                </div>
+            </div>
+            <div class="menu-item" onclick="addItem('Poulet-Nudeln', 12.00)">
+                <img src="asset/Nudeln.jpg" alt="Poulet-Nudeln">
+                <div class="item-info">
+                    <span>Poulet-Nudeln - 12.00</span>
+                </div>
+            </div>
+            <div class="menu-item" onclick="addItem('Vegi-Nudeln', 8.00)">
+                <img src="asset/vegi-nudeln.jpg" alt="Vegi-Nudeln">
+                <div class="item-info">
+                    <span>Vegi-Nudeln - 8.00</span>
+                </div>
+            </div>
+            <div class="menu-item" onclick="addItem('Frühlingsrolle', 3.00)">
+                <img src="asset/springroll.jpg" alt="Frühlingsrolle">
+                <div class="item-info">
+                    <span>Frühlingsrolle - 3.00</span>
+                </div>
+            </div>
+            <div class="menu-item" onclick="addItem('Soft-Drinks', 2.50)">
+                <img src="asset/cola.png" alt="Soft-Drinks">
+                <div class="item-info">
+                    <span>Soft-Drinks - 2.50</span>
+                </div>
+            </div>
+            <div class="menu-item" onclick="addItem('E-Drinks', 3.00)">
+                <img src="asset/eltony.png" alt="E-Drinks">
+                <div class="item-info">
+                    <span>E-Drinks - 3.00</span>
+                </div>
+            </div>
+            
+        </div>
+        <div id="total" class="alert alert-info text-center">
+            Total: <span id="totalPrice">0.00</span>
+        </div>
+
+        <div id="payment-section" class="mb-4">
+            <label for="moneyGiven">Money Given: </label>
+            <input type="number" id="moneyGiven" class="form-control d-inline w-auto" step="0.01">
+            <button class="btn btn-primary" onclick="calculateChange()">Calculate Change</button>
+        </div>
+        <div id="change" class="alert alert-warning text-center">
+            Change: <span id="changeAmount">0.00</span>
+        </div>
+
+        <div id="order-list" class="mb-4">
+            <h2>Order List:</h2>
+            <ul id="orders" class="list-group"></ul>
+        </div>
+
+        <div id="order-summary" class="order-summary-button">
+            <button id="reset-button" class="btn btn-secondary" onclick="resetOrder()">Reset Order</button>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <!-- Font Awesome JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js"></script>
+
+    <script>
+        let totalPrice = 0;
+        let orderList = [];
+
+        function addItem(name, price) {
+            totalPrice += price;
+            const existingItem = orderList.find(item => item.name === name);
+            if (existingItem) {
+                existingItem.quantity += 1;
+            } else {
+                orderList.push({ name, price, quantity: 1 });
+            }
+            updateTotal();
+            updateOrderList();
+        }
+
+        function removeItem(name, price) {
+            totalPrice -= price;
+            if (totalPrice < 0) totalPrice = 0;  // Ensure total price doesn't go negative
+            const index = orderList.findIndex(item => item.name === name);
+            if (index !== -1) {
+                const item = orderList[index];
+                if (item.quantity > 1) {
+                    item.quantity -= 1;
+                } else {
+                    orderList.splice(index, 1);
+                }
+            }
+            updateTotal();
+            updateOrderList();
+        }
+
+        function updateTotal() {
+            document.getElementById('totalPrice').textContent = totalPrice.toFixed(2);
+        }
+
+        function calculateChange() {
+            const moneyGiven = parseFloat(document.getElementById('moneyGiven').value);
+            if (!isNaN(moneyGiven)) {
+                const change = moneyGiven - totalPrice;
+                document.getElementById('changeAmount').textContent = change.toFixed(2);
+            } else {
+                document.getElementById('changeAmount').textContent = "0.00";
+            }
+        }
+
+        function updateOrderList() {
+            const ordersElement = document.getElementById('orders');
+            ordersElement.innerHTML = '';
+            orderList.forEach(item => {
+                const li = document.createElement('li');
+                li.className = 'list-group-item order-item';
+                li.innerHTML = `<span class="item-details">${item.name} - $${item.price.toFixed(2)} <span class="badge badge-success">${item.quantity}</span></span>
+                                <button class="btn btn-sm btn-danger" onclick="removeItem('${item.name}', ${item.price})"><i class="fas fa-times"></i></button>`;
+                ordersElement.appendChild(li);
+            });
+        }
+
+        function resetOrder() {
+            totalPrice = 0;
+            orderList = [];
+            document.getElementById('totalPrice').textContent = "0.00";
+            document.getElementById('changeAmount').textContent = "0.00";
+            document.getElementById('moneyGiven').value = "";
+            updateOrderList();
+        }
+    </script>
+</body>
+</html>
