@@ -58,7 +58,6 @@
         }
         #payment-section {
             margin-top: 20px;
-            display: flex;
             align-items: center;
             justify-content: center;
         }
@@ -67,6 +66,8 @@
         }
         #payment-section input {
             margin-right: 10px;
+            padding: 1.75rem 1.25rem;
+            font-size: 1.5rem;
         }
         #order-list {
             margin-top: 20px;
@@ -91,72 +92,101 @@
             display: flex;
             justify-content: center;
         }
+        input[type="number"] {
+            -moz-appearance: textfield;
+          }
+          input[type="number"]::-webkit-inner-spin-button, 
+          input[type="number"]::-webkit-outer-spin-button { 
+            -webkit-appearance: none; 
+            margin: 0; 
+          }
+        @media (max-width: 767px) {
+            .container {
+                margin-left: 0;
+                padding: 15px;
+            }
+            .sidebar {
+                width: 100%;
+            }
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <img src="asset/logo.png" alt="Logo" class="logo">
+    <div class="d-flex">
+        <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
+            <div class="sidebar-sticky pt-3">
+                <img src="asset/logo.png" alt="Logo" class="logo">
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <div id="total" class="alert alert-info text-center">
+                            Total: <span id="totalPrice">0.00</span>
+                        </div>
+                    </li>
+                    <li class="nav-item">
+                        <div id="payment-section" class="mb-4">
+                            <label for="moneyGiven">Money Given: </label>
+                            <input type="number" id="moneyGiven" class="form-control d-inline" inputmode="decimal">
+                        </div>
+                    </li>
+                    <li class="nav-item">
+                        <div id="change" class="alert alert-warning text-center">
+                            Change: <span id="changeAmount">0.00</span>
+                        </div>
+                    </li>
+                    <li class="nav-item">
+                        <div id="order-summary" class="order-summary-button">
+                            <button id="reset-button" class="btn btn-secondary" onclick="resetOrder()">Reset Order</button>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </nav>
 
-        <div id="menu" class="menu-grid">
-            <div class="menu-item" onclick="addItem('MOMO', 10.00)">
-                <img src="asset/momo.jpg" alt="MOMO">
-                <div class="item-info">
-                    <span>MOMO - 10.00</span>
+        <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4 py-4">
+            <div id="menu" class="menu-grid">
+                <div class="menu-item" onclick="addItem('MOMO', 10.00)">
+                    <img src="asset/momo.jpg" alt="MOMO">
+                    <div class="item-info">
+                        <span>MOMO - 10.00</span>
+                    </div>
+                </div>
+                <div class="menu-item" onclick="addItem('Poulet-Nudeln', 12.00)">
+                    <img src="asset/Nudeln.jpg" alt="Poulet-Nudeln">
+                    <div class="item-info">
+                        <span>Poulet-Nudeln - 12.00</span>
+                    </div>
+                </div>
+                <div class="menu-item" onclick="addItem('Vegi-Nudeln', 8.00)">
+                    <img src="asset/vegi-nudeln.jpg" alt="Vegi-Nudeln">
+                    <div class="item-info">
+                        <span>Vegi-Nudeln - 8.00</span>
+                    </div>
+                </div>
+                <div class="menu-item" onclick="addItem('Frühlingsrolle', 3.00)">
+                    <img src="asset/springroll.jpg" alt="Frühlingsrolle">
+                    <div class="item-info">
+                        <span>Frühlingsrolle - 3.00</span>
+                    </div>
+                </div>
+                <div class="menu-item" onclick="addItem('Soft-Drinks', 2.50)">
+                    <img src="asset/cola.png" alt="Soft-Drinks">
+                    <div class="item-info">
+                        <span>Soft-Drinks - 2.50</span>
+                    </div>
+                </div>
+                <div class="menu-item" onclick="addItem('E-Drinks', 3.00)">
+                    <img src="asset/eltony.png" alt="E-Drinks">
+                    <div class="item-info">
+                        <span>E-Drinks - 3.00</span>
+                    </div>
                 </div>
             </div>
-            <div class="menu-item" onclick="addItem('Poulet-Nudeln', 12.00)">
-                <img src="asset/Nudeln.jpg" alt="Poulet-Nudeln">
-                <div class="item-info">
-                    <span>Poulet-Nudeln - 12.00</span>
-                </div>
-            </div>
-            <div class="menu-item" onclick="addItem('Vegi-Nudeln', 8.00)">
-                <img src="asset/vegi-nudeln.jpg" alt="Vegi-Nudeln">
-                <div class="item-info">
-                    <span>Vegi-Nudeln - 8.00</span>
-                </div>
-            </div>
-            <div class="menu-item" onclick="addItem('Frühlingsrolle', 3.00)">
-                <img src="asset/springroll.jpg" alt="Frühlingsrolle">
-                <div class="item-info">
-                    <span>Frühlingsrolle - 3.00</span>
-                </div>
-            </div>
-            <div class="menu-item" onclick="addItem('Soft-Drinks', 2.50)">
-                <img src="asset/cola.png" alt="Soft-Drinks">
-                <div class="item-info">
-                    <span>Soft-Drinks - 2.50</span>
-                </div>
-            </div>
-            <div class="menu-item" onclick="addItem('E-Drinks', 3.00)">
-                <img src="asset/eltony.png" alt="E-Drinks">
-                <div class="item-info">
-                    <span>E-Drinks - 3.00</span>
-                </div>
+            <div id="order-list" class="mb-4">
+                <h2>Order List:</h2>
+                <ul id="orders" class="list-group"></ul>
             </div>
             
-        </div>
-        <div id="total" class="alert alert-info text-center">
-            Total: <span id="totalPrice">0.00</span>
-        </div>
-
-        <div id="payment-section" class="mb-4">
-            <label for="moneyGiven">Money Given: </label>
-            <input type="text" id="moneyGiven" class="form-control d-inline w-auto" inputmode="decimal">
-        </div>
-        
-        <div id="change" class="alert alert-warning text-center">
-            Change: <span id="changeAmount">0.00</span>
-        </div>
-
-        <div id="order-list" class="mb-4">
-            <h2>Order List:</h2>
-            <ul id="orders" class="list-group"></ul>
-        </div>
-
-        <div id="order-summary" class="order-summary-button">
-            <button id="reset-button" class="btn btn-secondary" onclick="resetOrder()">Reset Order</button>
-        </div>
+        </main>
     </div>
 
     <!-- Bootstrap JS and dependencies -->
@@ -241,7 +271,7 @@
         function togglePaymentSection() {
             const paymentSection = document.getElementById('payment-section');
             if (orderList.length > 0) {
-                paymentSection.style.display = 'flex';
+                paymentSection.style.display = 'block';
             } else {
                 paymentSection.style.display = 'none';
             }
